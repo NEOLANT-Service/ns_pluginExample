@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "projects": {
+    "neosintez-client": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "less"
+        }
+      },
+      "root": "apps/neosintez-client",
+      "sourceRoot": "apps/neosintez-client/src",
+      "prefix": "my-app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/neosintez-client",
+            "index": "apps/neosintez-client/src/index.html",
+            "main": "apps/neosintez-client/src/main.ts",
+            "polyfills": "apps/neosintez-client/src/polyfills.ts",
+            "tsConfig": "apps/neosintez-client/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/neosintez-client/src/favicon.ico",
+              "apps/neosintez-client/src/assets"
+            ],
+            "styles": ["apps/neosintez-client/src/styles.scss","node_modules/material-design-icons/iconfont/material-icons.css"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/neosintez-client/src/environments/environment.ts",
+                  "with": "apps/neosintez-client/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "neosintez-client:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "neosintez-client:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "neosintez-client:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/neosintez-client/tsconfig.app.json",
+              "apps/neosintez-client/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/neosintez-client/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/neosintez-client/jest.config.js",
+            "tsConfig": "apps/neosintez-client/tsconfig.spec.json",
+            "setupFile": "apps/neosintez-client/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "neosintez-client-e2e": {
+      "root": "apps/neosintez-client-e2e",
+      "sourceRoot": "apps/neosintez-client-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/neosintez-client-e2e/cypress.json",
+            "tsConfig": "apps/neosintez-client-e2e/tsconfig.e2e.json",
+            "devServerTarget": "neosintez-client:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "neosintez-client:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/neosintez-client-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/neosintez-client-e2e/**"]
+          }
+        }
+      }
+    },
+    "ui": {
+      "projectType": "library",
+      "root": "libs/ui",
+      "sourceRoot": "libs/ui/src",
+      "prefix": "my-app",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui/tsconfig.lib.json",
+              "libs/ui/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui/jest.config.js",
+            "tsConfig": "libs/ui/tsconfig.spec.json",
+            "setupFile": "libs/ui/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "less"
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
+  },
+  "defaultProject": "neosintez-client"
+}

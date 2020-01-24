@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NsApiClient\NsApiClient.csproj" />
+    <ProjectReference Include="..\NsPluginExample.DAL\NsPluginExample.DAL.csproj" />
+    <ProjectReference Include="..\NsPluginExample.Domain.Contracts\NsPluginExample.Domain.Contracts.csproj" />
+    <ProjectReference Include="..\NsPluginExample.Domain.Models\NsPluginExample.Domain.Models.csproj" />
+  </ItemGroup>
+
+</Project>

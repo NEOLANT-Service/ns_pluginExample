@@ -1,0 +1,12 @@
+<mat-sidenav-container [autosize]=false>
+  <mat-sidenav mode="side" #sidenav>
+    <app-models-tree (modelSelectedChange)="modelSelectedChangeHandler($event)" [hidden]="mode!==drawerModes.Tree">
+    </app-models-tree>
+    <app-viewer3d-file-list #viewer3dfiles [hidden]="mode!==drawerModes.Files"></app-viewer3d-file-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-viewer3d-toolbox [restricted]="inIFRAME" (commandClick)="commandClickHandler($event)"></app-viewer3d-toolbox>
+    <app-viewer3d #viewer3d class="objects-fill-container" [options]=pluginOptions
+      (selectedChanged)="selectedChangeHandler($event)"></app-viewer3d>
+  </mat-sidenav-content>
+</mat-sidenav-container>

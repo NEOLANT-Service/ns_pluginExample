@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <Version>1.1.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="frontend\**" />
+    <Content Remove="frontend\**" />
+    <EmbeddedResource Remove="frontend\**" />
+    <None Remove="frontend\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NsApiClient\NsApiClient.csproj" />
+    <ProjectReference Include="..\NsApiModels\NsApiModels.csproj" />
+    <ProjectReference Include="..\NsPluginExample.Application\NsPluginExample.Application.csproj" />
+    <ProjectReference Include="..\NsPluginExample.DAL\NsPluginExample.DAL.csproj" />
+    <ProjectReference Include="..\NsPluginExample.Domain.Contracts\NsPluginExample.Domain.Contracts.csproj" />
+    <ProjectReference Include="..\NsPluginExample.Domain.Models\NsPluginExample.Domain.Models.csproj" />
+  </ItemGroup>
+
+</Project>

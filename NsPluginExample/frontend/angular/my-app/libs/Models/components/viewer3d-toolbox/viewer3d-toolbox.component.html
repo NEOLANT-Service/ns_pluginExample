@@ -1,0 +1,8 @@
+<mat-toolbar color="default">
+  <span *ngFor="let button of buttons; let i = index">
+    <button mat-icon-button (click)="clickHandler(i,button)" title="{{button.title}}" *ngIf="!button.invisible"
+      id="{{button.name}}" [disabled]="disabled">
+      <i class="{{button.icon}}"></i>
+    </button>
+  </span>
+</mat-toolbar>

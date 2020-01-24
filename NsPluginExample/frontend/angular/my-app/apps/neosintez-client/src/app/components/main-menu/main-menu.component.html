@@ -1,0 +1,18 @@
+<mat-toolbar color="primary">
+  <span routerLink="/">{{title}}</span>
+  <nav>
+    <a mat-button [routerLink]="[item.url]" *ngFor="let item of menuItems">
+      <i class="item.icon"></i>
+      <span>{{item.name}}</span>
+    </a>
+  </nav>
+  <span fxFlex></span>
+  <mat-menu #profileMenu="matMenu" yPosition="above">
+    <a mat-menu-item routerLink="/profile" routerLinkActive="active">Профиль</a>
+    <button mat-menu-item>Выход</button>
+  </mat-menu>
+
+  <button mat-icon-button [matMenuTriggerFor]="profileMenu" *ngIf="full">
+    <i class="mdi mdi-dots-vertical"></i>
+  </button>
+</mat-toolbar>

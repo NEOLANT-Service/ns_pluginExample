@@ -1,0 +1,10 @@
+:host {
+  height: 100%;
+  mat-sidenav-container{
+    height: inherit;
+    width:100%;
+    mat-sidenav{
+      max-width: 30%;
+    }
+  }
+}

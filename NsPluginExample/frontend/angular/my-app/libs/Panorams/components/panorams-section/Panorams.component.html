@@ -1,0 +1,12 @@
+<mat-sidenav-container class="nav-container">
+  <mat-sidenav mode="side" opened class="left-container">
+    <app-panorams-list (selectionChange)="panoramSelectionChangeHandler($event)">
+
+    </app-panorams-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="right-container">
+    <app-panoram-view [panoram]=selectedPanoram>
+
+    </app-panoram-view>
+  </mat-sidenav-content>
+</mat-sidenav-container>

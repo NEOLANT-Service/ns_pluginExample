@@ -1,0 +1,5 @@
+<mat-nav-list dense>
+  <mat-list-item *ngFor="let panoram of panorams" (click)="selectionChangeHandler(panoram)">
+    <a matLine href="javascript:void(0)">{{panoram.Name}}</a>
+  </mat-list-item>
+</mat-nav-list>

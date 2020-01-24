@@ -1,0 +1,15 @@
+:host {
+  height:100%;
+  .nav-container {
+    height: inherit;
+    .left-container {
+      flex-direction: column;
+      width: 20%;
+      background-color: #444;
+      color: #eee;
+    }
+    .right-container {
+      padding: 8px;
+    }
+  }
+}

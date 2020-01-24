@@ -1,0 +1,19 @@
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <mat-tree-node *matTreeNodeDef="let node" [ngStyle]="{'padding-left.px': node.level*10}">
+    <button mat-icon-button disabled></button>
+    <i class="mdi mdi-folder mdi-24px" *ngIf="node.item.Type===nodeTypes.Folder"></i>
+    <a *ngIf="node.item.Type===nodeTypes.Model" href="javascript:void(0)" (click)="nodeSelectHandler(node)">{{node.item.Name}}</a>
+    <span *ngIf="node.item.Type!==nodeTypes.Model">{{node.item.Name}}</span>
+  </mat-tree-node>
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" [ngStyle]="{'padding-left.px': node.level*10}">
+    <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    <i class="mdi mdi-folder mdi-24px" *ngIf="node.item.Type===nodeTypes.Folder"></i>
+    <a *ngIf="node.item.Type===nodeTypes.Model" href="javascript:void(0)" (click)="nodeSelectHandler(node)">{{node.item.Name}}</a>
+    <span *ngIf="node.item.Type!==nodeTypes.Model">{{node.item.Name}}</span>
+    <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar"></mat-progress-bar>
+  </mat-tree-node>
+</mat-tree>

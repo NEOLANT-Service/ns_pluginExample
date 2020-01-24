@@ -1,0 +1,29 @@
+:host {
+  height: 100%;
+  &::ng-deep .nav-container {
+    height: inherit;
+    .left-container {
+      flex-direction: column;
+      width: 20%;
+      background-color: #444;
+      color: #eee;
+    }
+    .right-container {
+      padding: 8px;
+    }
+  }
+
+  &::ng-deep app-panoram-view {
+    width: 100%;
+    height: inherit;
+  }
+}
+:host ::ng-deep app-panorams-list {
+  background-color: inherit;
+  & .mat-list-item {
+    color: white;
+    &:hover {
+      background-color: red;
+    }
+  }
+}
