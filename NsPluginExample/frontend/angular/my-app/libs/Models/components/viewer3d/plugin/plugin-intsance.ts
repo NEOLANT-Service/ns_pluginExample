@@ -38,7 +38,7 @@ export class P3dbPluginInstance {
   }
 
   /**Событие вызываемое при удачной инициализации плагина*/
-  initializationSuccess: Subject<void> = new Subject();
+  initializationSuccess: BehaviorSubject<boolean | null> = new BehaviorSubject(null);
 
   /**Событие вызываемое при сбое инициализации плагина*/
   initializationError: BehaviorSubject<IInitializationErrorEvent> = new BehaviorSubject(null);
@@ -241,12 +241,12 @@ export class P3dbPluginInstance {
 
   /**Реация на событие  инициализации плагина*/
   private initializationCompleteHandler(state: P3dbInitializationState, error?: string) {
-    this.pluginElement.removeEventListener("InitializationComplete", this.pluginEventHandler)
+    this.pluginElement.removeEventListener("InitializationComplete", this.pluginEventHandler);
     if (state === P3dbInitializationState.Successful) {
       this.isInitialized = true;
       this.scene = new P3DBPluginScene(this.plugin);
       this.cache = new P3DBPluginCache(this.plugin);
-      this.initializationSuccess.next();
+      this.initializationSuccess.next(true);
     } else {
       this.isInitialized = false;
       this.initializationError.next({ state, error });
@@ -260,14 +260,13 @@ export class P3dbPluginInstance {
     switch (state) {
       case P3dbLoadingState.Loaded:
         this.isLoaded = true;
+        this._isLoading = false;
         this.loadingStateChanged.next({ state, total, loaded, progress, error });
         break;
       case P3dbLoadingState.Progress:
-        if (!this.isLoaded) {
-          if (this.context.progress < progress) {
-            this.context.progress = progress;
-            this.loadingStateChanged.next({ state, total, loaded, progress, error });
-          }
+        if (this.context.progress < progress) {
+          this.context.progress = progress;
+          this.loadingStateChanged.next({ state, total, loaded, progress, error });
         }
         break;
       case P3dbLoadingState.Failed:

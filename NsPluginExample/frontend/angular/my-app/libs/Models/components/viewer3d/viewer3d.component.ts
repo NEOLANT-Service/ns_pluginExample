@@ -241,29 +241,31 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pluginInstance.initializationError
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(x => {
-        this.isInitialized = false;
-        this.pluginError = x;
+        if (x) {
+          this.isInitialized = false;
+          this.pluginError = x;
+        }
       });
 
     this.pluginInstance.initializationSuccess
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(x => {
-        this.pluginError = null;
-        this.isInitialized = true;
-        this.customInit();
-        if (this.modelId) {
-          this.loadModel(this.modelId);
-        } else {
-          this.togglePluginContainer(true);
+        if (x) {
+          this.pluginError = null;
+          this.isInitialized = true;
+          this.customInit();
+          if (this.modelId) {
+            this.loadModel(this.modelId);
+          } else {
+            this.togglePluginContainer(true);
+          }
         }
       });
 
     this.pluginInstance.loadingStateChanged
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(x => {
-        if (!this.loadingProcessState || x.progress > this.loadingProcessState.progress) {
-          this.loadingProcessState = x;
-        }
+        this.loadingProcessState = x;
         switch (x.state) {
           case P3dbLoadingState.Loaded:
             this.loadingProcessState = null;

@@ -1,4 +1,3 @@
-import { IP3dbPluginInstance } from './viewer3d.service';
 import { WindowService } from '../../../../apps/neosintez-client/src/app/services/window.service';
 import { Injectable } from '@angular/core';
 import { IP3dbPlugin, P3dbPluginInstance } from './plugin/plugin-intsance';
