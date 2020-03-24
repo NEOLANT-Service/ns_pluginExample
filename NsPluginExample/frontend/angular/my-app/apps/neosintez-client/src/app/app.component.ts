@@ -1,7 +1,6 @@
+import { AuthenticationService } from './../../../../libs/Security/services/authentication.service';
 import { AppEnvironmentService } from './services/app-environment.service';
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 /**Главнй компонент приложения */
 @Component({
@@ -11,25 +10,17 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'neosyntez client';
-
   executeIntoFrame = this.environmentService.inIFRAME;
-
-  private routerSubscription: Subscription;
+  get isAuthenticated() {
+    return this.authService.isAuthenticated;
+  }
 
   constructor(
-    private router: Router,
-    private environmentService: AppEnvironmentService) {
-  }
+    private readonly environmentService: AppEnvironmentService,
+    private readonly authService: AuthenticationService
+  ) {}
 
-  ngOnInit(): void {
-    this.routerSubscription = this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        console.log('Navigation End %o', event.url);
-      }
-    })
-  }
+  ngOnInit(): void {}
 
-  ngOnDestroy() {
-    this.routerSubscription && this.routerSubscription.unsubscribe();
-  }
+  ngOnDestroy() {}
 }

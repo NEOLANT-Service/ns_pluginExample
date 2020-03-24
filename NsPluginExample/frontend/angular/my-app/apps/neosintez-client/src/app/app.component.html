@@ -1,5 +1,6 @@
 <div fxLayout="column" fxFlex="100">
-  <div>
+  <app-login *ngIf="!isAuthenticated"></app-login>
+  <div *ngIf="isAuthenticated">
     <app-main-menu *ngIf="!executeIntoFrame"></app-main-menu>
   </div>
   <router-outlet></router-outlet>

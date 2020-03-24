@@ -23,7 +23,8 @@
             "aot": false,
             "assets": [
               "apps/neosintez-client/src/favicon.ico",
-              "apps/neosintez-client/src/assets"
+              "apps/neosintez-client/src/assets",
+              "apps/neosintez-client/src/oauth2-redirect.html"
             ],
             "styles": ["apps/neosintez-client/src/styles.scss","node_modules/material-design-icons/iconfont/material-icons.css"],
             "scripts": []

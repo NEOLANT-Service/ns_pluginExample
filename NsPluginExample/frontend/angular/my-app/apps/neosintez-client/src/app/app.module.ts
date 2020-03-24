@@ -1,3 +1,4 @@
+import { SecurityModule } from './../../../../libs/Security/security.module';
 import { SharedModule } from './../../../../libs/Shared/shared.module';
 import { AvailableGuard } from './services/available.guard';
 import { AppEnvironmentService } from './services/app-environment.service';
@@ -44,13 +45,10 @@ const appRoutes: Routes = [
     ObjectsModule,
     ModelsModule,
     PanoramsModule,
-    SharedModule
+    SharedModule,
+    SecurityModule
   ],
-  providers: [
-    ModelsApiService,
-    HttpClient,
-    AppEnvironmentService
-  ],
+  providers: [ModelsApiService, HttpClient, AppEnvironmentService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

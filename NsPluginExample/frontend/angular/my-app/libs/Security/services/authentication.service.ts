@@ -1,10 +1,11 @@
+import { CryptoService } from './crypto.service';
+import { SecurityConfigService } from './config.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
-import { Logger } from '../../shared/logger.service';
-import { Deferred } from '../../shared/deferred';
-import { config } from '../../ns.config';
+import { WindowService } from 'libs/Shared/services/window.service';
+import { Deferred } from 'libs/Shared/classes/deferred';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,6 @@ export class AuthenticationService {
     return this.context ? this.context.identity : undefined;
   }
 
-  //#region context:!!! прям очень временно
   private _context?: {
     readonly result: OAuthTokenResult;
     readonly identity: Identity;
@@ -45,10 +45,29 @@ export class AuthenticationService {
 
     this._authenticated.next(this.isAuthenticated);
   }
-  //#endregion
 
-  constructor(private http: HttpClient, private logger: Logger) {
-    window.addEventListener('message', this.onConnectResult.bind(this), false);
+  private endpoints: IAuthEndpoints;
+
+  constructor(
+    private readonly http: HttpClient,
+    private config: SecurityConfigService,
+    private readonly windowService: WindowService,
+    private readonly cryptoService: CryptoService
+  ) {
+    this._init();
+  }
+
+  private _init() {
+    this.endpoints = {
+      token: this.config.endpoint + '/connect/authorize',
+      userinfo: this.config.endpoint + '/connect/userinfo'
+    };
+
+    this.windowService.nativeWindow.addEventListener(
+      'message',
+      this.onConnectResult.bind(this),
+      false
+    );
 
     this._authenticated.subscribe(
       () =>
@@ -58,27 +77,24 @@ export class AuthenticationService {
 
   //#region connect/disconnect
 
-  private request?: {
-    state: string;
-    defer: Deferred<void>;
-  };
+  private request?: IAuthRequest;
 
   connect(): [string, Promise<void>] {
     if (this.request)
       return ['', Promise.reject('auth request already been sent')];
 
     this.request = {
-      state: this.getRandomKey(),
+      state: this.cryptoService.getRandomKey(),
       defer: new Deferred<void>()
     };
 
-    let url = `${endpoints.token}?${new HttpParams({
+    const url = `${this.endpoints.token}?${new HttpParams({
       fromObject: {
         response_type: 'token id_token',
-        client_id: config.clientId,
+        client_id: this.config.clientId,
         redirect_uri: `${location.origin}/oauth2-redirect.html`,
         scope: 'ns openid profile',
-        nonce: this.getRandomKey(),
+        nonce: this.cryptoService.getRandomKey(),
         state: this.request.state
       }
     })}`;
@@ -87,10 +103,10 @@ export class AuthenticationService {
   }
 
   private async onConnectResult(e: MessageEvent) {
-    let result = this.getResult(e, this.request && this.request.state);
+    const result = this.getResult(e, this.request && this.request.state);
     if (!result) return;
 
-    let defer = this.request!.defer;
+    const defer = this.request!.defer;
     this.request = undefined;
 
     if (isOAuthError(result)) {
@@ -109,7 +125,7 @@ export class AuthenticationService {
         return;
       }
 
-      let expires = Date.now() + +result.expires_in * 1000;
+      const expires = Date.now() + +result.expires_in * 1000;
 
       defer.resolve();
       this.context = { result: result, identity, expires };
@@ -123,12 +139,8 @@ export class AuthenticationService {
     alert(
       'Вы будете перенаправлены на сайт Неосинтез.\n Далее нажмите "Выход" и закройте вкладку.'
     );
-    window.open(config.endpoint);
+    this.windowService.nativeWindow.open(this.config.endpoint);
   }
-
-  //#endregion
-
-  //#region support
 
   /**
    *  internal use only
@@ -137,7 +149,6 @@ export class AuthenticationService {
     if (!this.context) throw new Error('AccessToken is not available');
 
     // TODO: запрашивать новый токен в случае просрочки
-
     return this.makeAuthHeader(this.context.result);
   }
 
@@ -150,26 +161,18 @@ export class AuthenticationService {
   private async getIdentity(result: OAuthTokenResult) {
     let options = { headers: this.makeAuthHeader(result) };
     let info = await this.http
-      .get<OAuthUserInfo>(endpoints.userinfo, options)
+      .get<OAuthUserInfo>(this.endpoints.userinfo, options)
       .toPromise();
 
     return {
       id: info.name,
       name: info.name,
-      roles: typeof info.role == 'string' ? [info.role] : info.role
+      roles: typeof info.role === 'string' ? [info.role] : info.role
     } as Identity;
   }
 
-  private getRandomKey() {
-    let crypto = window.crypto || (<any>window).msCrypto;
-
-    let buf = new Uint8Array(10);
-    crypto.getRandomValues(buf);
-    return btoa(Array.from(buf).join(''));
-  }
-
   private getResult(e: MessageEvent, state?: string) {
-    if (state && e.origin === location.origin && typeof e.data == 'string') {
+    if (state && e.origin === location.origin && typeof e.data === 'string') {
       let result = e.data.split('&').reduce(
         (r, i) => {
           let [k, v] = i.split('=');
@@ -185,13 +188,6 @@ export class AuthenticationService {
 
   //#endregion
 }
-
-// TODO: accessToken`ы храним в памяти, refresh в sessionStorage и пингпонг нужен только при перезапуске браузера на выписывание нового accessToken
-
-const endpoints = {
-  token: config.endpoint + '/connect/authorize',
-  userinfo: config.endpoint + '/connect/userinfo'
-};
 
 interface Identity {
   readonly id: string;
@@ -231,4 +227,12 @@ interface OAuthUserInfo {
   role: string | string[];
 }
 
-//#endregion
+interface IAuthRequest {
+  state: string;
+  defer: Deferred<void>;
+}
+
+interface IAuthEndpoints {
+  token: string;
+  userinfo: string;
+}
