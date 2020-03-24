@@ -1,6 +1,6 @@
+import { SharedModule } from './../../../../libs/Shared/shared.module';
 import { AvailableGuard } from './services/available.guard';
 import { AppEnvironmentService } from './services/app-environment.service';
-import { WindowService } from './services/window.service';
 import { PanoramsComponent } from '../../../../libs/Panorams/components/panorams-section/panorams.component';
 import { PanoramsModule } from './../../../../libs/Panorams/Panorams.module';
 import { ModelsModule } from '../../../../libs/Models/models.module';
@@ -17,7 +17,6 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
-import { AppServicesModule } from './app-services.module';
 import { RouterModule, Routes, CanActivate } from '@angular/router';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { ObjectsComponent } from 'libs/Objects/components/objects-section/Objects.component';
@@ -36,20 +35,22 @@ const appRoutes: Routes = [
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(
-      appRoutes
-    ),
+    RouterModule.forRoot(appRoutes),
     BrowserAnimationsModule,
     AppComponentsModule,
     MaterialModule,
-    AppServicesModule,
     CommonModule,
     HttpClientModule,
     ObjectsModule,
     ModelsModule,
-    PanoramsModule
+    PanoramsModule,
+    SharedModule
   ],
-  providers: [ModelsApiService, HttpClient, WindowService, AppEnvironmentService],
+  providers: [
+    ModelsApiService,
+    HttpClient,
+    AppEnvironmentService
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

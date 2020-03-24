@@ -16,7 +16,7 @@ function getWindow(): any {
   providedIn: 'root'
 })
 export class WindowService {
-  /**Вернет ссылку на windows брузера */
+  /**Вернет ссылку на window брузера */
   get nativeWindow(): ICustomWindow {
     return getWindow();
   }
