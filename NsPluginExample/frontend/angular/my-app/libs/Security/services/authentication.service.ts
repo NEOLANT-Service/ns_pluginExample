@@ -1,11 +1,12 @@
+import { ConfigSnapshotService } from './../../Shared/services/config-snapshot.service';
 import { CryptoService } from './crypto.service';
-import { SecurityConfigService } from './config.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { WindowService } from 'libs/Shared/services/window.service';
 import { Deferred } from 'libs/Shared/classes/deferred';
+import { ConfigService } from 'libs/Shared/services/backend/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,7 @@ export class AuthenticationService {
 
   constructor(
     private readonly http: HttpClient,
-    private config: SecurityConfigService,
+    private config: ConfigSnapshotService,
     private readonly windowService: WindowService,
     private readonly cryptoService: CryptoService
   ) {
@@ -58,11 +59,6 @@ export class AuthenticationService {
   }
 
   private _init() {
-    this.endpoints = {
-      token: this.config.endpoint + '/connect/authorize',
-      userinfo: this.config.endpoint + '/connect/userinfo'
-    };
-
     this.windowService.nativeWindow.addEventListener(
       'message',
       this.onConnectResult.bind(this),
@@ -86,6 +82,11 @@ export class AuthenticationService {
     this.request = {
       state: this.cryptoService.getRandomKey(),
       defer: new Deferred<void>()
+    };
+
+    this.endpoints = {
+      token: this.config.endpoint + '/connect/authorize',
+      userinfo: this.config.endpoint + '/connect/userinfo'
     };
 
     const url = `${this.endpoints.token}?${new HttpParams({

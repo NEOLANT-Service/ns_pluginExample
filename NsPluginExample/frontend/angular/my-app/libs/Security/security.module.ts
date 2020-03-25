@@ -1,6 +1,5 @@
 import { LoginComponent } from './components/login/login.component';
 import { CryptoService } from './services/crypto.service';
-import { SecurityConfigService } from './services/config.service';
 import { SharedModule } from './../Shared/shared.module';
 import { NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -17,7 +16,6 @@ import { CommonModule } from '@angular/common';
       multi: true
     },
     AuthenticationService,
-    SecurityConfigService,
     CryptoService
   ],
   declarations: [LoginComponent],

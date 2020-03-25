@@ -1,9 +1,16 @@
-<app-login *ngIf="!isAuthenticated"></app-login>
-<div fxLayout="column"
-     *ngIf="isAuthenticated"
+<div *ngIf="isReady"
+     fxLayout="column"
      fxFlex="100">
-  <div>
-    <app-main-menu *ngIf="!executeIntoFrame"></app-main-menu>
+  <app-login *ngIf="!isAuthenticated"></app-login>
+  <div fxLayout="column"
+       *ngIf="isAuthenticated"
+       fxFlex="100">
+    <div>
+      <app-main-menu *ngIf="!executeIntoFrame"></app-main-menu>
+    </div>
+    <router-outlet></router-outlet>
   </div>
-  <router-outlet></router-outlet>
+</div>
+<div *ngIf="!isReady">
+  Loading...
 </div>

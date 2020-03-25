@@ -1,6 +1,13 @@
+import {
+  IAppConfig,
+  AppAuthType
+} from './../../../../libs/Shared/services/backend/config.service';
+import { takeUntil } from 'rxjs/operators';
 import { AuthenticationService } from './../../../../libs/Security/services/authentication.service';
 import { AppEnvironmentService } from './services/app-environment.service';
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ConfigService } from 'libs/Shared/services/backend/config.service';
+import { Observable, Subject } from 'rxjs';
 
 /**Главнй компонент приложения */
 @Component({
@@ -11,16 +18,53 @@ import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'neosyntez client';
   executeIntoFrame = this.environmentService.inIFRAME;
+  config: IAppConfig;
+
+  readonly AuthType = AppAuthType;
+
   get isAuthenticated() {
-    return this.authService.isAuthenticated;
+    if (this._isReady) {
+      if (this.config.neosyntezClient.authType === this.AuthType.Token)
+        return this.authService.isAuthenticated;
+      else return true;
+    }
+    return false;
   }
+
+  private _isReady: boolean = false;
+  get isReady(): boolean {
+    return this._isReady;
+  }
+
+  private ngUnsubscribe: Subject<void> = new Subject();
 
   constructor(
     private readonly environmentService: AppEnvironmentService,
-    private readonly authService: AuthenticationService
+    private readonly authService: AuthenticationService,
+    private readonly configService: ConfigService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this._fetchConfig();
+  }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  private _fetchConfig() {
+    this.configService
+      .fetch()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: x => {
+          this._isReady = true;
+          this.config = x;
+        },
+        error: ex => {
+          this._isReady = false;
+        }
+      });
+  }
 }
