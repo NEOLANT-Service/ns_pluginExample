@@ -1,29 +1,38 @@
+import { IPanoram } from './panorams.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ConfigSnapshotService } from 'libs/Shared/services/config-snapshot.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PanoramsService {
-  constructor(private http: HttpClient) {
-
-  }
+  constructor(
+    private readonly http: HttpClient,
+    private readonly config: ConfigSnapshotService
+  ) {}
   /**Вернет список панорам */
   getAll() {
-    return this.http.get<IPanoram[]>('/api/panorams');
+    const endpoint = this.config.endpoint + '/api/pano';
+    return this.http.get<IPanoram[]>(endpoint);
   }
 
   /**Вернет дополнительную информацию по панораме */
   get(tourId: string) {
-    return this.http.get(`/api/panorams/${tourId}`)
+    const endpoint = this.config.endpoint + `/api/pano/${tourId}`;
+    return this.http.get(endpoint);
   }
 
   getStructure() {
-    return this.http.get('/api/panorams');
+    const endpoint = this.config.endpoint + '/api/pano';
+    return this.http.get(endpoint);
   }
 
-  getContent() {
-
+  getViewURL(panoram: IPanoram) {
+    return (
+      this.config.endpoint +
+      `/api/pano/${panoram.Id}/content//${panoram.Entry}`
+    );
   }
 }
 

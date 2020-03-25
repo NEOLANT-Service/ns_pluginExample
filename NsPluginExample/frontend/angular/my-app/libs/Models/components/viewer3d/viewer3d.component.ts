@@ -1,14 +1,34 @@
 import { ModelsApiService } from '../../../../apps/neosintez-client/src/app/services/backend/models-api.service';
-import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+  Input,
+  ViewChild,
+  Output,
+  EventEmitter,
+  NgZone
+} from '@angular/core';
 import { Viewer3dService } from './viewer3d.service';
-import { P3dbPluginInstance, IInitializationErrorEvent, P3dbLoadingState, P3dbInitializationState, ILoadingStateChangedEvent, SelectionMode, ISelectionArgsGroup, ILoadModelInfo, IDialogFile } from './plugin/plugin-intsance';
+import {
+  P3dbPluginInstance,
+  IInitializationErrorEvent,
+  P3dbLoadingState,
+  P3dbInitializationState,
+  ILoadingStateChangedEvent,
+  SelectionMode,
+  ISelectionArgsGroup,
+  ILoadModelInfo,
+  IDialogFile
+} from './plugin/plugin-intsance';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { _getOptionScrollPosition } from '@angular/material/core';
 import { P3dbPluginOptions } from './plugin/plugin-startup-options';
 
-
-export const fadeColor = "0000000A";
+export const fadeColor = '0000000A';
 
 /**Компонент-обертка для работы с плагином P3DB
  *
@@ -29,29 +49,35 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
     this._modelId = value;
     this.current = { Id: value, Ids: [] } as IViewer3DModel;
   }
-  get modelId() { return this._modelId; }
+  get modelId() {
+    return this._modelId;
+  }
 
   private _options: P3dbPluginOptions;
   /**Опции плагина */
   @Input() set options(value: P3dbPluginOptions) {
     if (!this.isInitialized) {
       this._options = value;
-      if (this._options)
-        this.initInstance();
+      if (this._options) this.initInstance();
     }
   }
-  get options() { return this._options; };
+  get options() {
+    return this._options;
+  }
 
   private _viewMode: ViewMode | undefined;
   @Input() set viewMode(value: ViewMode | undefined) {
     this._viewMode = value;
     this.select(this._viewMode, false);
   }
-  get viewMode() { return this._viewMode; }
+  get viewMode() {
+    return this._viewMode;
+  }
 
   @Output() selectedChanged = new EventEmitter<number[]>();
 
-  @ViewChild('pluginContainer', { static: true }) protected pluginContainer: ElementRef;
+  @ViewChild('pluginContainer', { static: true })
+  protected pluginContainer: ElementRef;
 
   private pluginInstance: P3dbPluginInstance;
   isSupported: boolean;
@@ -73,11 +99,11 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private viewer3dService: Viewer3dService,
-    private modelsApi: ModelsApiService
-  ) { }
+    private modelsApi: ModelsApiService,
+    private ngZone: NgZone
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -95,11 +121,11 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleGUI(show?: boolean) {
     if (this.isInitialized) {
-      const cache = this.toggleGUI as unknown as {
-        show: boolean
+      const cache = (this.toggleGUI as unknown) as {
+        show: boolean;
       };
       show = show !== undefined ? show : !cache.show;
-      this.pluginInstance.ToggleGUI(cache.show = show);
+      this.pluginInstance.ToggleGUI((cache.show = show));
     }
   }
 
@@ -112,7 +138,10 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
       this.pluginInstance.selectElements({
-        groups: (mode === ViewMode.Fade ? [{ Color: fadeColor, All: true } as ISelectionArgsGroup] : []).concat({ Ids: ids, Select: true, Fit: !!fit }),
+        groups: (mode === ViewMode.Fade
+          ? [{ Color: fadeColor, All: true } as ISelectionArgsGroup]
+          : []
+        ).concat({ Ids: ids, Select: true, Fit: !!fit }),
         mode: mode === ViewMode.Hide ? SelectionMode.Only : SelectionMode.All
       });
 
@@ -132,8 +161,12 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (files) {
       content = files.map(x => {
-        return { Name: x.FileName, URL: x.Name, Size: x.Size } as ILoadModelInfo
-      })
+        return {
+          Name: x.FileName,
+          URL: x.Name,
+          Size: x.Size
+        } as ILoadModelInfo;
+      });
       switch (mode) {
         case LoadFileMode.Load:
           this.pluginInstance.scene.loadScene(content);
@@ -164,15 +197,15 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   loadModel(modelId: number) {
     this.ensureInitialize();
-    if (!modelId) throw new Error("modelId is missing");
+    if (!modelId) throw new Error('modelId is missing');
     else {
       this.modelId = modelId;
       this.modelsApi.getContent(modelId).subscribe({
-        next: (x) => {
+        next: x => {
           this.togglePluginContainer(false);
           this.pluginInstance.loadModel(x);
         }
-      })
+      });
     }
   }
 
@@ -185,12 +218,16 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
   private initInstance() {
     const self = this;
     if (!this.isInitialized) {
-      setTimeout(() => {
+      this.ngZone.run(() => {
         self.togglePluginContainer(false);
         if (self.viewer3dService.browserSupport) {
           self.isSupported = true;
           try {
-            self.pluginInstance = self.viewer3dService.getPluginInstance(self.options, 1, self.pluginContainer.nativeElement);
+            self.pluginInstance = self.viewer3dService.getPluginInstance(
+              self.options,
+              1,
+              self.pluginContainer.nativeElement
+            );
             this.subscribe();
           } catch (ex) {
             this.needInstall = true;
@@ -198,31 +235,30 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           self.isSupported = false;
         }
-      })
+      });
     }
   }
 
   /**Пользовательские настройки плагина */
   private customInit() {
-
     // инициализировать UI
-    this.pluginInstance.SetBackgroundColor("FFFFFFFF");
+    this.pluginInstance.SetBackgroundColor('FFFFFFFF');
 
     const commands = {
       1001: {
-        name: "scene",
-        caption: "Сцена",
+        name: 'scene',
+        caption: 'Сцена',
         1004: {
-          name: "scene_clear",
-          caption: "Очистить"
+          name: 'scene_clear',
+          caption: 'Очистить'
         }
       },
       1002: {
-        name: "bycenterview",
-        caption: "По центру сцены"
+        name: 'bycenterview',
+        caption: 'По центру сцены'
       },
       1003: {
-        name: "toggleGUI",
+        name: 'toggleGUI',
         caption: 'Показать GUI'
       }
     };
@@ -265,17 +301,19 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pluginInstance.loadingStateChanged
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(x => {
-        this.loadingProcessState = x;
-        switch (x.state) {
-          case P3dbLoadingState.Loaded:
-            this.loadingProcessState = null;
-            this.togglePluginContainer(true);
-            break;
-          case P3dbLoadingState.Aborted:
-          case P3dbLoadingState.Failed:
-            this.loadingProcessState = null;
-            break;
-        }
+        setTimeout(() => {
+          this.loadingProcessState = x;
+          switch (x.state) {
+            case P3dbLoadingState.Loaded:
+              this.loadingProcessState = null;
+              this.togglePluginContainer(true);
+              break;
+            case P3dbLoadingState.Aborted:
+            case P3dbLoadingState.Failed:
+              this.loadingProcessState = null;
+              break;
+          }
+        });
       });
 
     this.pluginInstance.selectedChanged
@@ -289,7 +327,7 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(x => {
         this.customMenuClickHandler(x);
-      })
+      });
   }
 
   /**Обработка пользовательского мерю плагина */
@@ -313,12 +351,13 @@ export class Viewer3dComponent implements OnInit, AfterViewInit, OnDestroy {
   /**Скрыть показать контейнер плагина */
   private togglePluginContainer(show: boolean) {
     if (this.pluginContainer)
-      this.pluginContainer.nativeElement.style.visibility = show ? "visible" : "hidden";
+      this.pluginContainer.nativeElement.style.visibility = show
+        ? 'visible'
+        : 'hidden';
   }
 
   private ensureInitialize() {
-    if (this.pluginInstance && this.isInitialized)
-      return;
+    if (this.pluginInstance && this.isInitialized) return;
     throw new Error('Not initialized');
   }
 }
@@ -333,7 +372,7 @@ enum ViewMode {
 interface IViewer3DModel {
   Id: number;
   Name: string;
-  Ids: number[]
+  Ids: number[];
 }
 
 export enum LoadFileMode {

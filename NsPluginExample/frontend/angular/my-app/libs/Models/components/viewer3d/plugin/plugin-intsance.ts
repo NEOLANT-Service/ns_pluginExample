@@ -5,7 +5,6 @@ import { Subject } from 'rxjs';
 import { P3DBPluginScene } from './plugin-scene';
 import { file } from '@babel/types';
 
-
 /**Экземпляр плагина */
 export class P3dbPluginInstance {
   private plugin: IP3dbPlugin;
@@ -15,8 +14,7 @@ export class P3dbPluginInstance {
     return this._isLoaded;
   }
   private set isLoaded(value: boolean) {
-    if (value === true)
-      this._isLoading = false;
+    if (value === true) this._isLoading = false;
     this._isLoaded = value;
   }
 
@@ -38,10 +36,14 @@ export class P3dbPluginInstance {
   }
 
   /**Событие вызываемое при удачной инициализации плагина*/
-  initializationSuccess: BehaviorSubject<boolean | null> = new BehaviorSubject(null);
+  initializationSuccess: BehaviorSubject<boolean | null> = new BehaviorSubject(
+    null
+  );
 
   /**Событие вызываемое при сбое инициализации плагина*/
-  initializationError: BehaviorSubject<IInitializationErrorEvent> = new BehaviorSubject(null);
+  initializationError: BehaviorSubject<
+    IInitializationErrorEvent
+  > = new BehaviorSubject(null);
 
   /**Событие о изменении статуса загрузки модели */
   loadingStateChanged: Subject<ILoadingStateChangedEvent> = new Subject();
@@ -64,20 +66,37 @@ export class P3dbPluginInstance {
   /**Кеш */
   cache: P3DBPluginCache;
 
-  constructor(private pluginElement: HTMLObjectElement, private options: IP3dbPluginOptions) {
-    this.plugin = pluginElement as unknown as IP3dbPlugin;
+  constructor(
+    private pluginElement: HTMLObjectElement,
+    private options: IP3dbPluginOptions
+  ) {
+    this.plugin = (pluginElement as unknown) as IP3dbPlugin;
     this.initInstance();
   }
 
   destroy() {
     if (this.pluginElement && this.isInitialized) {
-      if (this.plugin)
-        this.plugin.BeginDeInitialization();
-      this.pluginElement.removeEventListener("InitializationComplete", this.pluginEventHandler.bind(this));
-      this.pluginElement.removeEventListener("ModelLoadingStateChanged", this.pluginEventHandler.bind(this));
-      this.pluginElement.removeEventListener("ContextMenuCommandExecuted", this.pluginEventHandler.bind(this));
-      this.pluginElement.removeEventListener("DoubleClick", this.pluginEventHandler.bind(this));
-      this.pluginElement.removeEventListener("Click", this.pluginEventHandler.bind(this));
+      if (this.plugin) this.plugin.BeginDeInitialization();
+      this.pluginElement.removeEventListener(
+        'InitializationComplete',
+        this.pluginEventHandler.bind(this)
+      );
+      this.pluginElement.removeEventListener(
+        'ModelLoadingStateChanged',
+        this.pluginEventHandler.bind(this)
+      );
+      this.pluginElement.removeEventListener(
+        'ContextMenuCommandExecuted',
+        this.pluginEventHandler.bind(this)
+      );
+      this.pluginElement.removeEventListener(
+        'DoubleClick',
+        this.pluginEventHandler.bind(this)
+      );
+      this.pluginElement.removeEventListener(
+        'Click',
+        this.pluginEventHandler.bind(this)
+      );
       this.pluginElement.parentElement.removeChild(this.pluginElement);
     }
   }
@@ -91,8 +110,8 @@ export class P3dbPluginInstance {
     }
     this.isLoaded = false;
     this._isLoading = true;
+    this.context.progress = 0;
     try {
-
       this.plugin.LoadModel(JSON.stringify({ Content: files }));
     } catch (ex) {
       this.isLoaded = false;
@@ -102,7 +121,8 @@ export class P3dbPluginInstance {
   }
 
   getSelected() {
-    if (this.isLoaded) return this.evalResult<number[]>(this.plugin.GetSelectedUIDs());
+    if (this.isLoaded)
+      return this.evalResult<number[]>(this.plugin.GetSelectedUIDs());
     else {
       return [];
     }
@@ -115,18 +135,23 @@ export class P3dbPluginInstance {
 
   /** выделить элементы на модели */
   selectElements(args: ISelectionArgs) {
-    if (!args || !args.groups) throw new Error("invalid args");
-    this.plugin.SelectElementGroups(JSON.stringify({ g: args.groups }), args.mode);
-    if (args.groups.some(g => !!g.Select))
-      this.selectedChangedHandler(true);
+    if (!args || !args.groups) throw new Error('invalid args');
+    this.plugin.SelectElementGroups(
+      JSON.stringify({ g: args.groups }),
+      args.mode
+    );
+    if (args.groups.some(g => !!g.Select)) this.selectedChangedHandler(true);
   }
 
   clip(ids: number[]) {
     this.resetClip();
 
-    if (this.isLoaded) this.plugin.Clip(JSON.stringify({
-      ids
-    }));
+    if (this.isLoaded)
+      this.plugin.Clip(
+        JSON.stringify({
+          ids
+        })
+      );
   }
 
   resetClip() {
@@ -134,7 +159,15 @@ export class P3dbPluginInstance {
   }
 
   setCameraView(args: CameraViewArgs) {
-    if (this.isLoaded) this.plugin.SetCameraView(args.position.x, args.position.y, args.position.z, -args.view.azimuth, -args.view.zenith, args.view.fov);
+    if (this.isLoaded)
+      this.plugin.SetCameraView(
+        args.position.x,
+        args.position.y,
+        args.position.z,
+        -args.view.azimuth,
+        -args.view.zenith,
+        args.view.fov
+      );
   }
 
   centerViewOnSelected() {
@@ -149,7 +182,7 @@ export class P3dbPluginInstance {
   /**Добавление пунктов пользовательского контекстного меню */
   AddContextMenuCommands(menu: any) {
     this.plugin.AddContextMenuCommands(JSON.stringify(menu));
-  };
+  }
 
   /**Показать/ скрыть GUI плагина */
   ToggleGUI(show: boolean): void {
@@ -197,51 +230,72 @@ export class P3dbPluginInstance {
     }
 
     function getFilename(path: string) {
-      const i = path.lastIndexOf("\\");
+      const i = path.lastIndexOf('\\');
       return removeExtension(i > -1 ? path.substring(i + 1) : path);
-    };
+    }
 
     if (dialogResult.Files) {
       dialogResult.Files = dialogResult.Files.map(x => {
-        return { ...x, FileName: getFilename(x.Name) }
-      })
+        return { ...x, FileName: getFilename(x.Name) };
+      });
     }
     return dialogResult;
   }
 
   /**Инициализация экземпляра плагина */
   private initInstance() {
-    this.pluginElement.addEventListener("InitializationComplete", this.pluginEventHandler.bind(this));
-    this.pluginElement.addEventListener("ModelLoadingStateChanged", this.pluginEventHandler.bind(this));
-    this.pluginElement.addEventListener("ContextMenuCommandExecuted", this.pluginEventHandler.bind(this));
-    this.pluginElement.addEventListener("DoubleClick", this.pluginEventHandler.bind(this));
-    this.pluginElement.addEventListener("Click", this.pluginEventHandler.bind(this));
+    this.pluginElement.addEventListener(
+      'InitializationComplete',
+      this.pluginEventHandler.bind(this)
+    );
+    this.pluginElement.addEventListener(
+      'ModelLoadingStateChanged',
+      this.pluginEventHandler.bind(this)
+    );
+    this.pluginElement.addEventListener(
+      'ContextMenuCommandExecuted',
+      this.pluginEventHandler.bind(this)
+    );
+    this.pluginElement.addEventListener(
+      'DoubleClick',
+      this.pluginEventHandler.bind(this)
+    );
+    this.pluginElement.addEventListener(
+      'Click',
+      this.pluginEventHandler.bind(this)
+    );
     this.plugin.BeginInitialization(this.options.Debug);
   }
 
   private pluginEventHandler(e: CustomEvent) {
     switch (e.type) {
-      case "InitializationComplete":
+      case 'InitializationComplete':
         this.initializationCompleteHandler.apply(this, e.detail);
         break;
-      case "ModelLoadingStateChanged":
+      case 'ModelLoadingStateChanged':
         this.modelLoadingStateChangedHandler.apply(this, e.detail);
         break;
-      case "ContextMenuCommandExecuted":
+      case 'ContextMenuCommandExecuted':
         this.contextMenuCommandHandler.apply(this, e.detail);
         break;
-      case "DoubleClick":
+      case 'DoubleClick':
         this.doubleClickHandler.apply(this, e.detail);
         break;
-      case "Click":
+      case 'Click':
         this.clickHandler.apply(this, e.detail);
         break;
     }
   }
 
   /**Реация на событие  инициализации плагина*/
-  private initializationCompleteHandler(state: P3dbInitializationState, error?: string) {
-    this.pluginElement.removeEventListener("InitializationComplete", this.pluginEventHandler);
+  private initializationCompleteHandler(
+    state: P3dbInitializationState,
+    error?: string
+  ) {
+    this.pluginElement.removeEventListener(
+      'InitializationComplete',
+      this.pluginEventHandler
+    );
     if (state === P3dbInitializationState.Successful) {
       this.isInitialized = true;
       this.scene = new P3DBPluginScene(this.plugin);
@@ -254,19 +308,36 @@ export class P3dbPluginInstance {
   }
 
   /**Реация на событие изменения статуса загрузки модели */
-  private modelLoadingStateChangedHandler(state: P3dbLoadingState, total: number, loaded: number, error?: string) {
-    const progress = +(loaded / total * 100).toFixed(0);
+  private modelLoadingStateChangedHandler(
+    state: P3dbLoadingState,
+    total: number,
+    loaded: number,
+    error?: string
+  ) {
+    const progress = +((loaded / total) * 100).toFixed(0);
     //Костыль, позволяющий не отправлять сообщения Process после того как отправлено событие Loaded
     switch (state) {
       case P3dbLoadingState.Loaded:
         this.isLoaded = true;
         this._isLoading = false;
-        this.loadingStateChanged.next({ state, total, loaded, progress, error });
+        this.loadingStateChanged.next({
+          state,
+          total,
+          loaded,
+          progress,
+          error
+        });
         break;
       case P3dbLoadingState.Progress:
         if (this.context.progress < progress) {
           this.context.progress = progress;
-          this.loadingStateChanged.next({ state, total, loaded, progress, error });
+          this.loadingStateChanged.next({
+            state,
+            total,
+            loaded,
+            progress,
+            error
+          });
         }
         break;
       case P3dbLoadingState.Failed:
@@ -276,7 +347,13 @@ export class P3dbPluginInstance {
         if (this.context.progress < progress) {
           this.context.progress = progress;
         }
-        this.loadingStateChanged.next({ state, total, loaded, progress, error });
+        this.loadingStateChanged.next({
+          state,
+          total,
+          loaded,
+          progress,
+          error
+        });
         break;
     }
   }
@@ -302,8 +379,14 @@ export class P3dbPluginInstance {
     if (this.isLoaded) {
       let uids = this.getSelected();
 
-      let hash = this.lastSelected.reduce((r, i) => (r[i] = null, r), {} as { [uid: string]: null });
-      if (this.lastSelected.length === uids.length && this.lastSelected.every(id => id in hash)) return;
+      let hash = this.lastSelected.reduce((r, i) => ((r[i] = null), r), {} as {
+        [uid: string]: null;
+      });
+      if (
+        this.lastSelected.length === uids.length &&
+        this.lastSelected.every(id => id in hash)
+      )
+        return;
 
       this.lastSelected.splice(0, this.lastSelected.length);
       this.lastSelected.push(...uids);
@@ -311,16 +394,15 @@ export class P3dbPluginInstance {
       if (!this.lastSelected.length) return;
       this.lastSelected.splice(0, this.lastSelected.length);
     }
-    if (forceEvent)
-      this.selectedChanged.next(this.lastSelected.slice());
+    if (forceEvent) this.selectedChanged.next(this.lastSelected.slice());
   }
 
   private evalResult<T>(r: string): T {
     return r && (JSON.parse(r).array || []);
-  };
+  }
 
   private ensureLoaded() {
-    if (!this.isLoaded) throw new Error("Model is not loaded");
+    if (!this.isLoaded) throw new Error('Model is not loaded');
   }
 }
 
@@ -344,7 +426,14 @@ export interface IP3dbPlugin {
   Clip(uids: string): void;
   ResetClip(): void;
 
-  SetCameraView(x: number, y: number, z: number, azimuth: number, zenith: number, fov: number): void;
+  SetCameraView(
+    x: number,
+    y: number,
+    z: number,
+    azimuth: number,
+    zenith: number,
+    fov: number
+  ): void;
   CenterViewOnSelected(): void;
 
   GetFlybys(): string;
@@ -371,7 +460,6 @@ export interface IP3dbPlugin {
   /**Вызовет диалоговое окно плагина работы с файлами и вернет информацию о локальных файлах, выбранных пользователемы*/
   GetLocalFileInformation(): string;
 
-
   /**Очистит кеш плагина */
   Cache_Clear();
 
@@ -380,7 +468,6 @@ export interface IP3dbPlugin {
 
   /**Вернет список файлов, храняшихся в кеше */
   Cache_GetFiles();
-
 }
 
 /**Статусы инициализации плагина */
@@ -406,30 +493,30 @@ export enum P3dbLoadingState {
 /**Свойства камеры наблюдателя */
 export interface CameraViewArgs {
   position: {
-    x: number,
-    y: number,
-    z: number
+    x: number;
+    y: number;
+    z: number;
   };
   view: {
-    azimuth: number,
-    zenith: number,
-    fov: number
-  }
+    azimuth: number;
+    zenith: number;
+    fov: number;
+  };
 }
 
 /**Описание события ошибки инциализации */
 export interface IInitializationErrorEvent {
-  state: P3dbInitializationState,
-  error: string
+  state: P3dbInitializationState;
+  error: string;
 }
 
 /**Описание события изменения стутса загрузки модели */
 export interface ILoadingStateChangedEvent {
-  state: P3dbLoadingState,
-  total: number,
-  loaded: number,
+  state: P3dbLoadingState;
+  total: number;
+  loaded: number;
   progress: number;
-  error?: string
+  error?: string;
 }
 
 /**Описание контекста загрузки */
@@ -474,12 +561,12 @@ export interface IDialogFile {
 export interface IDialogResult {
   State: DialogResultState;
   Error?: string;
-  Files?: IDialogFile[]
+  Files?: IDialogFile[];
 }
 
 export enum SelectionMode {
   All = 0,
-  Only = 1,
+  Only = 1
   // Except = 2 - not implemented
 }
 
