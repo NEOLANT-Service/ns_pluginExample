@@ -17,12 +17,12 @@ export class P3DBSettingsService {
   /**Вернет настройки для плагина */
   fetch() {
     let endpoint: string;
-    if (this.config.authType === AppAuthType.Token)
+    if (this.config.authType === AppAuthType.ImplicitFlow)
       endpoint = this.config.endpoint + '/api/settings/plugin3d';
     else endpoint = '/api/3d/settings';
     return this.httpClient.get<IP3DBPluginSettings>(endpoint).pipe(
       map(x => {
-        if (this.config.authType === AppAuthType.Code) {
+        if (this.config.authType === AppAuthType.AccessCode) {
           x.LicenseUrl = '/api/3d/licence/.lic';
         } else {
           x.LicenseUrl = this.config.endpoint + '/3d/.lic';

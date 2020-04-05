@@ -1,3 +1,4 @@
+import { NeosintezContextService } from './services/neosintez-context.service';
 import { SecurityModule } from './../../../../libs/Security/security.module';
 import { SharedModule } from './../../../../libs/Shared/shared.module';
 import { AvailableGuard } from './services/available.guard';
@@ -48,7 +49,12 @@ const appRoutes: Routes = [
     SharedModule,
     SecurityModule
   ],
-  providers: [ModelsApiService, HttpClient, AppEnvironmentService],
+  providers: [
+    ModelsApiService,
+    HttpClient,
+    AppEnvironmentService,
+    NeosintezContextService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

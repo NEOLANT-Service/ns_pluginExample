@@ -22,11 +22,12 @@ namespace NsPluginExample.Controllers
             var config = (AppConfiguration)configurationService.Configuration.Clone();
             switch (config.NeosyntezClient.AuthType)
             {
-                case AuthType.Code:
+                case AuthType.AccessCode:
                     config.NeosyntezClient.Auth = null;
                     config.NeosyntezClient.Instance = string.Empty;
                     return Ok(config);
-                case AuthType.Token:
+                case AuthType.ImplicitFlow:
+                case AuthType.AccessToken:
                     config.NeosyntezClient.Auth.Password = null;
                     config.NeosyntezClient.Auth.Secret = null;
                     config.NeosyntezClient.Auth.UserName = null;

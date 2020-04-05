@@ -9,7 +9,8 @@ namespace NsPluginExample.Models.Configuration
     {
         [Obsolete]
         None = 0,
-        Code,
-        Token
+        AccessCode,
+        ImplicitFlow,
+        AccessToken
     }
 }

@@ -1,15 +1,16 @@
+import { AppAuthType } from 'libs/Shared/services/backend/config.service';
+import { ConfigSnapshotService } from 'libs/Shared/services/config-snapshot.service';
 import { Component, OnInit } from '@angular/core';
-import {
-  AuthenticationService,
-  isOAuthError
-} from 'libs/Security/services/authentication.service';
 import { LoggerService } from 'libs/Shared/services/logger.service';
 import { WindowService } from 'libs/Shared/services/window.service';
+import { authenticationServiceProvider } from 'libs/Security/services/authentication.factory';
+import { AuthenticationService } from 'libs/Security/services/authentication.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.less']
+  styleUrls: ['./login.component.less'],
+  providers: [authenticationServiceProvider]
 })
 export class LoginComponent implements OnInit {
   private url: string;
@@ -18,11 +19,28 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private readonly windowService: WindowService,
-    private authService: AuthenticationService,
-    private logger: LoggerService
+    private readonly authService: AuthenticationService,
+    private readonly configService: ConfigSnapshotService,
+    private readonly logger: LoggerService
   ) {}
 
   ngOnInit(): void {
+    switch (this.configService.authType) {
+      case AppAuthType.ImplicitFlow:
+        this._implisitFlowInit();
+        break;
+      case AppAuthType.AccessToken:
+        this._initAccessToken();
+        break;
+    }
+  }
+
+  logInHandler() {
+    this.win = this.windowService.nativeWindow.window.open(this.url, undefined);
+    if (!this.win) this.error = 'Не удалось открыть форму логина';
+  }
+
+  private _implisitFlowInit() {
     const [url, promise] = this.authService.connect();
     this.url = url;
 
@@ -33,20 +51,20 @@ export class LoginComponent implements OnInit {
       })
       .catch(e => {
         this.logger.error(
-          isOAuthError(e)
+          this.authService.isOAuthError(e)
             ? `${e.error}: ${e.error_description}`
             : e.message || e,
           e
         );
-        this.error = isOAuthError(e)
+        this.error = this.authService.isOAuthError(e)
           ? `Обратитесь к администратору (${e.error_description})`
           : 'Попробуйте зайти позднее или обратитесь к администратору';
         this.win && this.win.close();
       });
   }
 
-  logIn() {
-    this.win = this.windowService.nativeWindow.window.open(this.url, undefined);
-    if (!this.win) this.error = 'Не удалось открыть форму логина';
+  private _initAccessToken() {
+    this.authService.connect();
+    this.windowService.nativeWindow.window.location.reload();
   }
 }

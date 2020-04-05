@@ -36,6 +36,7 @@ export interface INeosyntezClientConfig {
 
 export enum AppAuthType {
   None = 0,
-  Code = 1,
-  Token = 2
+  AccessCode = 1,
+  ImplicitFlow = 2,
+  AccessToken=3
 }

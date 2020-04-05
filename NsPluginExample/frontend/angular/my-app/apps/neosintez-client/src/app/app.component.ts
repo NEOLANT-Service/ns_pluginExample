@@ -1,13 +1,14 @@
+import { NeosintezContextService } from './services/neosintez-context.service';
 import {
   IAppConfig,
   AppAuthType
 } from './../../../../libs/Shared/services/backend/config.service';
 import { takeUntil } from 'rxjs/operators';
-import { AuthenticationService } from './../../../../libs/Security/services/authentication.service';
+import { AuthenticationService } from '../../../../libs/Security/services/authentication.service';
 import { AppEnvironmentService } from './services/app-environment.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ConfigService } from 'libs/Shared/services/backend/config.service';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 /**Главнй компонент приложения */
 @Component({
@@ -24,9 +25,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   get isAuthenticated() {
     if (this._isReady) {
-      if (this.config.neosyntezClient.authType === this.AuthType.Token)
-        return this.authService.isAuthenticated;
-      else return true;
+      switch (this.config.neosyntezClient.authType) {
+        case this.AuthType.ImplicitFlow:
+        case this.AuthType.AccessToken:
+          return this.authService.isAuthenticated;
+        default:
+          return true;
+      }
     }
     return false;
   }
@@ -41,7 +46,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private readonly environmentService: AppEnvironmentService,
     private readonly authService: AuthenticationService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    readonly neosintezContext: NeosintezContextService
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
         next: x => {
           this._isReady = true;
           this.config = x;
+          this.neosintezContext.init();
         },
         error: ex => {
           this._isReady = false;

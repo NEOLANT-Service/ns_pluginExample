@@ -1,3 +1,4 @@
+import { ImplicitFlowAuthenticationService } from './services/implicit-flow-authentication.service';
 import { LoginComponent } from './components/login/login.component';
 import { CryptoService } from './services/crypto.service';
 import { SharedModule } from './../Shared/shared.module';
@@ -6,6 +7,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthenticationService } from './services/authentication.service';
 import { AccessTokenInterceptor } from './services/access-token.interceptor';
 import { CommonModule } from '@angular/common';
+import { AccessTokenAuthenticationService } from './services/access-token-authentication.service';
 
 @NgModule({
   imports: [SharedModule, CommonModule],
@@ -15,6 +17,8 @@ import { CommonModule } from '@angular/common';
       useClass: AccessTokenInterceptor,
       multi: true
     },
+    ImplicitFlowAuthenticationService,
+    AccessTokenAuthenticationService,
     AuthenticationService,
     CryptoService
   ],

@@ -90,7 +90,7 @@ namespace NsPluginExample
                      ClientSecret = configService.Configuration.NeosyntezClient.Auth.Secret,
                      UserName = configService.Configuration.NeosyntezClient.Auth.UserName,
                      UserPassword = configService.Configuration.NeosyntezClient.Auth.Password,
-                     TokenEndpoint = "/api/token"
+                     TokenEndpoint = "/connect/token"
                  };
              });
 
