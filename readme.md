@@ -59,9 +59,9 @@ npm run start
 
 Установить на Windows Server 2012 и выше
 - IIS 
-- NET Core 2.2.1 Core Runtime x86
-- NET Core 2.2.1 Core Runtime x64
-- NET Core 2.2.1 Windows Sevrer Hosting
+- Microsoft .NET Core Runtime - 2.2.1 (x86)
+- Microsoft .NET Core Runtime - 2.2.1 (x64)
+- Microsoft .NET Core 2.2.1 - Windows Server Hosting
 
 Создать пустой сайт и пул для него. Остановить сайт и пул.
 В папке сайта разместить собранное в release приложение. Настроить appsettings.json таким образом, чтобы он ссылался на доступный из места расположения приложения экземпляр НЕОСИНТЕЗ.
