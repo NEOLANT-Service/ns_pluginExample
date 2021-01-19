@@ -2,4 +2,8 @@ mat-toolbar {
   & a i {
     margin-right: 0.5em;
   }
+
+  > span {
+    cursor: pointer;
+  }
 }

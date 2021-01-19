@@ -55,15 +55,15 @@ namespace NsApiClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public Task GetAsync(System.Guid id)
+        public Task<ContentValue> GetContentAsync(System.Guid id)
         {
-            return GetAsync(id, CancellationToken.None);
+            return GetContentAsync(id, CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async Task GetAsync(System.Guid id, CancellationToken cancellationToken)
+        public async Task<ContentValue> GetContentAsync(System.Guid id, CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -99,7 +99,7 @@ namespace NsApiClient
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")
                         {
-                            return;
+                            return await ReadAsContent(response_.Content);
                         }
                         else
                         if (status_ == "401")
@@ -116,14 +116,16 @@ namespace NsApiClient
                     }
                     finally
                     {
-                        if (response_ != null)
-                            response_.Dispose();
+                        //if (response_ != null)
+                        //    response_.Dispose();
                     }
                 }
             }
             finally
             {
             }
+
+            return null;
         }
 
         /// <summary>Удалить загруженный временный файл</summary>
@@ -17872,7 +17874,7 @@ namespace NsApiClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public Task Contents2Async(System.Guid id)
+        public Task<ContentValue> Contents2Async(System.Guid id)
         {
             return Contents2Async(id, CancellationToken.None);
         }
@@ -17880,7 +17882,7 @@ namespace NsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async Task Contents2Async(System.Guid id, CancellationToken cancellationToken)
+        public async Task<ContentValue> Contents2Async(System.Guid id, CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -17916,7 +17918,7 @@ namespace NsApiClient
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")
                         {
-                            return;
+                            return await ReadAsContent(response_.Content);
                         }
                         else
                         if (status_ == "401")
@@ -17941,6 +17943,7 @@ namespace NsApiClient
             finally
             {
             }
+            return null;
         }
 
         /// <returns>Success</returns>

@@ -6,7 +6,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./viewer3d-file-list.component.css']
 })
 export class Viewer3dFileListComponent implements OnInit {
-  @Input() files: any[];
+  @Input() files: string;
 
   @Output() commit: EventEmitter<any[]> = new EventEmitter();
 

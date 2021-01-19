@@ -35,11 +35,11 @@ namespace NsPluginExample.Controllers
             return Ok(await modelsService.GetModelContentAsync(id));
         }
 
-        [HttpGet("{id:long}/content/{contentId:guid}")]
-        public async Task<IActionResult> GetP3DBFile([FromRoute] long id, Guid contentId)
+        [HttpGet("/api/content/{contentId:guid}")]
+        public async Task<IActionResult> GetP3DBFile([FromRoute] Guid contentId)
         {
-            var content = await modelsService.GetP3DBFile(id, contentId);
-            return content != null ? this.BuildFileResponse(content, "inline") : (IActionResult)NotFound();
+            var content = await modelsService.GetP3DBFile(contentId);
+            return content != null ? this.BuildFileResponse(content) : (IActionResult)NotFound();
         }
     }
 }

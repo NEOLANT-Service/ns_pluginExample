@@ -28,10 +28,9 @@ namespace NsPluginExample.Domain.Contracts.Services
         /// <summary>
         /// Вернет содержимое P3DB-файла
         /// </summary>
-        /// <param name="id">Идентфиикаор модели</param>
         /// <param name="contentId">Идентификатор файла</param>
         /// <returns></returns>
-        Task<ContentValue> GetP3DBFile(long id, Guid contentId);
+        Task<ContentValue> GetP3DBFile(Guid contentId);
 
         /// <summary>
         /// Вернет настройик для плагина

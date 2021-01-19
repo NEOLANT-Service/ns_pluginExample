@@ -1,0 +1,10 @@
+<div>
+  <div *ngIf="error" class="error">
+    Не удалось войти в систему, т.к. произошла непредвиденная ошибка
+    <div class="small">{{error}}</div>
+  </div>
+  <div class="text-center">
+    <div class="text-muted pb-4">Необходимо войти через Неосинтез</div>
+    <button (click)="logInHandler()" type="button" class="btn btn-primary">Войти</button>
+  </div>
+</div>

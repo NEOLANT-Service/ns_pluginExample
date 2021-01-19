@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { WindowService } from './window.service';
+import { WindowService } from 'libs/Shared/services/window.service';
 
 /** Сервичс  */
 @Injectable({
   providedIn: 'root'
 })
 export class AppEnvironmentService {
-  constructor(private windowService: WindowService) {
-
-  }
+  constructor(private windowService: WindowService) {}
 
   /**Запущенно в IFRAME */
   get inIFRAME(): boolean {

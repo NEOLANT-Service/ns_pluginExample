@@ -1,0 +1,8 @@
+:host {
+  height: 100%;
+  .fill-container {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+}

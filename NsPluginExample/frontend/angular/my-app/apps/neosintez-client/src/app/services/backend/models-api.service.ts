@@ -1,8 +1,34 @@
-import { WindowService } from './../window.service';
+import { NeosyntezHostService } from './../../../../../../libs/Shared/services/neosyntez-host.service';
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { int, guid } from '../../shared/types';
+
+@Injectable()
+export class ModelsApiService {
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly _host: NeosyntezHostService
+  ) {}
+
+  /**Получение контента */
+  getContent(modelId: int) {
+    const endpoint = this._host.api + `/models/${modelId}/content`;
+    return this.httpClient.get<IModelContent[]>(endpoint).pipe(
+      map(response => {
+        return response.map(x => {
+          const endpoint =
+          this._host.apiExtended + `/content/${x.Id}`;
+          return {
+            Name: x.Name,
+            Size: x.Size,
+            URL: endpoint
+          };
+        });
+      })
+    );
+  }
+}
 
 export interface IModelContent {
   MediaType: string;
@@ -13,26 +39,3 @@ export interface IModelContent {
   Id: guid;
   Name: string;
 }
-
-@Injectable()
-export class ModelsApiService {
-  constructor(private httpClient: HttpClient, private windowService: WindowService) {
-
-  }
-
-  /**Получение контента */
-  getContent(modelId: int) {
-    const location = this.windowService.nativeWindow.location;
-    return this.httpClient.get<IModelContent[]>(`/api/models/${modelId}/content`)
-      .pipe(map(response => {
-        return response.map(x => {
-          return {
-            Name: x.Name,
-            Size: x.Size,
-            URL: `${location.protocol}//${location.host}/api/models/${modelId}/content/${x.Id}`
-          }
-        })
-      }))
-  }
-}
-

@@ -10,13 +10,16 @@ namespace NsPluginExample.Application.Services
     public class NsModelsService : INsModelsService
     {
         private readonly INeosyntezClient neosyntezClient;
+        private readonly INsFileContentsService fileContents;
         private readonly string baseUrl;
 
         public NsModelsService(
             INeosyntezClient neosyntezClient,
+            INsFileContentsService fileContents,
             string baseUrl)
         {
             this.neosyntezClient = neosyntezClient ?? throw new ArgumentNullException(nameof(neosyntezClient));
+            this.fileContents = fileContents ?? throw new ArgumentNullException(nameof(fileContents));
             this.baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
         }
 
@@ -30,9 +33,9 @@ namespace NsPluginExample.Application.Services
             return neosyntezClient.GetApiClient(baseUrl).GetModelsAsync(id, null, false);
         }
 
-        public Task<ContentValue> GetP3DBFile(long id, Guid contentId)
+        public Task<ContentValue> GetP3DBFile(Guid contentId)
         {
-            return neosyntezClient.GetApiClient(baseUrl).Content2Async(contentId, id.ToString());
+            return fileContents.GetContent(contentId);
         }
 
         /// <summary>

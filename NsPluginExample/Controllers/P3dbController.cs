@@ -37,7 +37,7 @@ namespace NsPluginExample.Controllers
         /// Вернет настройки для плагина
         /// </summary>
         /// <returns></returns>
-        [HttpGet("settings")]
+        [HttpGet("/api/settings/plugin3d")]
         public async Task<IActionResult> GetSettings()
         {
             return Ok(await modelsService.GetPluginSettings());
