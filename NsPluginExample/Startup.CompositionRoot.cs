@@ -40,7 +40,7 @@ namespace NsPluginExample
             services.AddScoped<INsModelsService>(x =>
             {
                 var config = x.GetRequiredService<IAppConfigurationService>().Configuration;
-                return new NsModelsService(x.GetRequiredService<INeosyntezClient>(), config.NeosyntezClient.Instance);
+                return new NsModelsService(x.GetRequiredService<INeosyntezClient>(), x.GetRequiredService<INsFileContentsService>(), config.NeosyntezClient.Instance);
             });
             services.AddScoped<INsObjectsService>(x =>
             {
@@ -51,6 +51,11 @@ namespace NsPluginExample
             {
                 var config = x.GetRequiredService<IAppConfigurationService>().Configuration;
                 return new NsPanoramsService(x.GetRequiredService<INeosyntezClient>(), config.NeosyntezClient.Instance);
+            });
+            services.AddScoped<INsFileContentsService>(x =>
+            {
+                var config = x.GetRequiredService<IAppConfigurationService>().Configuration;
+                return new NsFileContentsService(x.GetRequiredService<INeosyntezClient>(), config.NeosyntezClient.Instance);
             });
 
 
@@ -90,7 +95,7 @@ namespace NsPluginExample
                      ClientSecret = configService.Configuration.NeosyntezClient.Auth.Secret,
                      UserName = configService.Configuration.NeosyntezClient.Auth.UserName,
                      UserPassword = configService.Configuration.NeosyntezClient.Auth.Password,
-                     TokenEndpoint = "/api/token"
+                     TokenEndpoint = "/connect/token"
                  };
              });
 

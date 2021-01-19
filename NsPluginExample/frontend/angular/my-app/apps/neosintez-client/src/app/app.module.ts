@@ -1,6 +1,8 @@
+import { ModelExampleComponent } from './../../../../libs/Models/components/model-example/model-example.component';
+import { SecurityModule } from './../../../../libs/Security/security.module';
+import { SharedModule } from './../../../../libs/Shared/shared.module';
 import { AvailableGuard } from './services/available.guard';
 import { AppEnvironmentService } from './services/app-environment.service';
-import { WindowService } from './services/window.service';
 import { PanoramsComponent } from '../../../../libs/Panorams/components/panorams-section/panorams.component';
 import { PanoramsModule } from './../../../../libs/Panorams/Panorams.module';
 import { ModelsModule } from '../../../../libs/Models/models.module';
@@ -17,8 +19,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
-import { AppServicesModule } from './app-services.module';
-import { RouterModule, Routes, CanActivate } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { ObjectsComponent } from 'libs/Objects/components/objects-section/Objects.component';
 import { ModelsComponent } from 'libs/Models/components/models-section/models.component';
@@ -29,6 +30,7 @@ const appRoutes: Routes = [
   { path: 'objects', component: ObjectsComponent },
   { path: 'models', component: ModelsComponent },
   { path: 'panorams', component: PanoramsComponent },
+  { path: 'model-example', component: ModelExampleComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 
@@ -36,20 +38,23 @@ const appRoutes: Routes = [
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(
-      appRoutes
-    ),
+    RouterModule.forRoot(appRoutes),
     BrowserAnimationsModule,
     AppComponentsModule,
     MaterialModule,
-    AppServicesModule,
     CommonModule,
     HttpClientModule,
     ObjectsModule,
     ModelsModule,
-    PanoramsModule
+    PanoramsModule,
+    SharedModule,
+    SecurityModule
   ],
-  providers: [ModelsApiService, HttpClient, WindowService, AppEnvironmentService],
+  providers: [
+    ModelsApiService,
+    HttpClient,
+    AppEnvironmentService
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

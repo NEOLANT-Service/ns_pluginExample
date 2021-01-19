@@ -1,4 +1,6 @@
-﻿namespace NsPluginExample.Models.Configuration
+﻿using System;
+
+namespace NsPluginExample.Models.Configuration
 {
     public class AuthConfig
     {
@@ -26,5 +28,17 @@
         /// Тип хранилище, используемый для хранения токена безопасности
         /// </summary>
         public TokenStorageType TokenStorage { get; set; } = TokenStorageType.Memory;
+
+        public AuthConfig Clone()
+        {
+            return new AuthConfig
+            {
+                ClientId = string.Copy(ClientId),
+                Password = string.Copy(Password),
+                Secret = string.Copy(Secret),
+                TokenStorage = TokenStorage,
+                UserName = string.Copy(UserName)
+            };
+        }
     }
 }

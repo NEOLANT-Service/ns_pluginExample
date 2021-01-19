@@ -5,34 +5,6 @@ import { Subject, BehaviorSubject, Observable, merge } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 
-
-/**
- * Database for dynamic data. When expanding a node in the tree, the data source will need to fetch
- * the descendants data from the database.
- */
-export class DynamicDatabase {
-  dataMap = new Map<string, string[]>([
-    ['Fruits', ['Apple', 'Orange', 'Banana']],
-    ['Vegetables', ['Tomato', 'Potato', 'Onion']],
-    ['Apple', ['Fuji', 'Macintosh']],
-    ['Onion', ['Yellow', 'White', 'Purple']]
-  ]);
-
-  getChildren(node: string): string[] | undefined {
-    return this.dataMap.get(node);
-  }
-
-  isExpandable(node: string): boolean {
-    return this.dataMap.has(node);
-  }
-}
-/**
- * File database, it can build a tree structured Json object from string.
- * Each node in Json object represents a file or a directory. For a file, it has filename and type.
- * For a directory, it has filename and children (a list of files or directories).
- * The input will be a json object string, and the output is a list of `FileNode` with nested
- * structure.
- */
 @Injectable()
 export class DynamicDataSource {
 

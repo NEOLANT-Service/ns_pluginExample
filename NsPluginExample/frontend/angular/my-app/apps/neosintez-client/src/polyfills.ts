@@ -52,6 +52,7 @@
  *
  */
 
+
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
@@ -63,3 +64,10 @@ import 'zone.js/dist/zone'; // Included with Angular CLI.
 
  import 'es7-shim/dist/es7-shim.js'
  import 'es5-shim/es5-shim.js'
+ import 'core-js/es7/object';
+ import 'core-js/es7/array';
+
+(window as any).__Zone_disable_requestAnimationFrame = true; // disable patch requestAnimationFrame
+(window as any).__Zone_disable_on_property = true; // disable patch onProperty such as onclick
+(window as any).__zone_symbol__UNPATCHED_EVENTS = ['scroll', 'mousemove']; // disable patch specified eventNames
+(window as any).__Zone_enable_cross_context_check = true;

@@ -3,7 +3,7 @@ export class P3dbPluginOptions implements IP3dbPluginOptions {
   private _cullingTreshold: number;
   private _debug: boolean;
   private _version: string;
-  private _licenceUrl: string;
+  private _licence: string;
 
   get ContributionCullingThreshold(): number | undefined {
     return this._cullingTreshold;
@@ -15,15 +15,15 @@ export class P3dbPluginOptions implements IP3dbPluginOptions {
     return this._version;
   }
   get LicenceUrl(): string {
-    return this._licenceUrl;
+    return this._licence;
   }
 
   /**Конструктор */
-  constructor(cullingTreshold: number, debug: boolean, version: string, licenceUrl: string) {
+  constructor(cullingTreshold: number, debug: boolean, version: string, licence: string) {
     this._cullingTreshold = cullingTreshold;
     this._debug = debug;
     this._version = version;
-    this._licenceUrl = licenceUrl;
+    this._licence = licence;
   }
 }
 

@@ -53,9 +53,11 @@ namespace NsApiClient
             {
                 Stream = await httpContent.ReadAsStreamAsync(),
                 Size = httpContent.Headers.ContentLength,
-                Name = httpContent.Headers.ContentDisposition.Name,
+                Name = httpContent.Headers.ContentDisposition.Name ?? httpContent.Headers.ContentDisposition.FileNameStar,
                 MediaType = httpContent.Headers.ContentType.MediaType
             };
+            if (result.Stream.CanRead && result.Stream.CanSeek)
+                result.Stream.Seek(0, System.IO.SeekOrigin.Begin);
             return result;
         }
     }

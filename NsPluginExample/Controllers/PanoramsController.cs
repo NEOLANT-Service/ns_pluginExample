@@ -11,7 +11,7 @@ namespace NsPluginExample.Controllers
     /// <summary>
     /// Контроллер для работы с панорамами
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/pano")]
     [ApiController]
     public class PanoramsController : ControllerBase
     {

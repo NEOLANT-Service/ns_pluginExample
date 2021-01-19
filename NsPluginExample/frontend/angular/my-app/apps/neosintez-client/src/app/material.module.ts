@@ -2,14 +2,15 @@ import { NgModule } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatToolbarModule } from "@angular/material/toolbar";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatIconModule } from "@angular/material/icon";
-import { MatButtonModule } from "@angular/material/button";
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatCardModule } from "@angular/material/card";
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSelectModule } from '@angular/material/select';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -25,12 +26,11 @@ const modules = [
   MatTreeModule,
   MatProgressBarModule,
   MatCardModule,
-  MatButtonToggleModule
-]
+  MatButtonToggleModule,
+  MatSelectModule
+];
 
 @NgModule({
   exports: modules
 })
-export class MaterialModule {
-
-}
+export class MaterialModule {}

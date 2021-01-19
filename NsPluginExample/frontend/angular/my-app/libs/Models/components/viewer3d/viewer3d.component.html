@@ -1,51 +1,58 @@
-<mat-card class="card-error" *ngIf="isSupported===false">
+<mat-card class="card-error"
+          *ngIf="isSupported === false">
   <mat-card-title>Ошибка</mat-card-title>
   <mat-card-content>
     Ваш браузер не поддерживает ActiveX
   </mat-card-content>
 </mat-card>
-<mat-card class="card-error" *ngIf="pluginError">
+<mat-card class="card-error"
+          *ngIf="state !== initializationStates.Initialized && state !== initializationStates.Uninitialized">
   <mat-card-title>Ошибка</mat-card-title>
   <mat-card-subtitle>
-    <div [ngSwitch]="pluginError.state">
-      <span *ngSwitchCase="initializationStates.Expired">Срок лицензии истек.</span>
-      <span *ngSwitchCase="initializationStates.Obsolete">
+    <div [ngSwitch]="state">
+      <span *ngSwitchCase="initializationStates.LicenceExpired">Срок лицензии истек.</span>
+      <span *ngSwitchCase="initializationStates.PluginIncompatible">
         Версия плагина устарела.
         <a href="/api/3d/wio3d_setup.exe">Плагин</a>
       </span>
-      <span *ngSwitchCase="initializationStates.Failed">Сбой инициализации плагина.</span>
+      <span *ngSwitchCase="initializationStates.Unavailable">Сбой инициализации плагина.</span>
     </div>
   </mat-card-subtitle>
   <mat-card-content>
-    {{pluginError.error}}
+    {{pluginError}}
   </mat-card-content>
 </mat-card>
-<mat-card class="card-error" *ngIf="needInstall">
+<mat-card class="card-error"
+          *ngIf="needInstall">
   <mat-card-title>Установка</mat-card-title>
   <mat-card-content>
     <a href="/api/3d/wio3d_setup.exe">Плагин</a>
   </mat-card-content>
 </mat-card>
 
-<mat-card class="card-info" *ngIf="loadingProcessState && loadingProcessState.progress">
+<mat-card class="card-info"
+          *ngIf="loadingProcessState && loadingState && loadingState===loadingProcessStates.Loading">
   <mat-card-title>
     <span *ngIf="loadingProcessState.progress<100">Загрузка</span>
-    <span *ngIf="loadingProcessState.progress==100">Инициализация</span>
+    <span *ngIf="loadingProcessState.progress==100">Инициализация сцены</span>
   </mat-card-title>
   <mat-card-content>
-    <mat-progress-bar mode="determinate" [value]="loadingProcessState.progress"
-      *ngIf="loadingProcessState.progress<100"></mat-progress-bar>
-    <mat-progress-bar mode="indeterminate" *ngIf="loadingProcessState.progress==100"></mat-progress-bar>
+    <mat-progress-bar mode="determinate"
+                      [value]="loadingProcessState.progress"
+                      *ngIf="loadingProcessState.progress<100"></mat-progress-bar>
+    <mat-progress-bar mode="indeterminate"
+                      *ngIf="loadingProcessState.progress==100"></mat-progress-bar>
   </mat-card-content>
 </mat-card>
 <mat-card class="card-error"
-  *ngIf="loadingProcessState && loadingProcessState.state===loadingProcessStates.Failed">
+          *ngIf="loadingProcessState && loadingProcessState.error">
   <mat-card-title>Ошибка</mat-card-title>
   <mat-card-content>
     <span>{{loadingProcessState.error}}</span>
   </mat-card-content>
 </mat-card>
 
-<div #pluginContainer class="plugin-container objects-fill-container">
+<div #pluginContainer
+     class="plugin-container objects-fill-container">
 
 </div>

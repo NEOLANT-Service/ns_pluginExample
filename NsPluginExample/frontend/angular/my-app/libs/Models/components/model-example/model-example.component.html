@@ -1,0 +1,14 @@
+<mat-form-field appearance="fill">
+  <mat-label>Attributes</mat-label>
+  <mat-select (selectionChange)="attributeChangeHandler($event)"
+  matNativeControl>
+    <mat-option *ngFor="let item of object?.Attributes | keyvalue" [value]="item.value.Value">
+      {{item.value.Value}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<app-viewer3d #viewer3d
+              class="objects-fill-container"
+              [options]=pluginOptions
+              (selectedChanged)="selectedChangeHandler($event)"></app-viewer3d>
